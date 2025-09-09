@@ -5,6 +5,7 @@ function App() {
   const [file, setFile] = useState(null);
   const [plantilla, setPlantilla] = useState(1);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false)
 
   const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
@@ -16,6 +17,8 @@ function App() {
       setError("Solo se permiten archivos PDF.");
       return;
     }
+
+    setLoading(true)
 
     const formData = new FormData();
     formData.append("file", file);
@@ -40,14 +43,14 @@ function App() {
       a.download = file.name.replace(".pdf", ".xlsx");
       a.click();
       window.URL.revokeObjectURL(url);
-
       // 🔄 Resetear formulario y estados
       setFile(null);
       setPlantilla(1);
       e.target.reset();
-
     } catch (err) {
       setError("Error de conexión con el servidor.");
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -69,9 +72,12 @@ function App() {
           <input type="file" accept=".pdf" onChange={(e) => setFile(e.target.files[0])} />
         </label>
 
-        <button type="submit">Convertir</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Procesando..." : "Convertir"}
+        </button>
       </form>
 
+      {loading && <p style={{ margin: "1rem" }}>⏳ Procesando archivo, por favor espere...</p>}
       {error && <p className="error">{error}</p>}
     </div>
   );
