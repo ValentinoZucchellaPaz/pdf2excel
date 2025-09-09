@@ -1,4 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Entorno virtual
 .venv/
 venv/
-__pycache__/
+
+# Node
 frontend/node_modules/
